@@ -74,11 +74,15 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	@Override
 	public boolean switchTo(S state) {
 		int i = indexOf(state);
-		if (i == -1) {
+		if (i == -1 || i == index) {
 			return false;
 		}
 		try {
 			writeLock.lock();
+			// 重新检查
+			if (i == index) {
+				return false;
+			}
 			index = i;
 		} finally {
 			writeLock.unlock();

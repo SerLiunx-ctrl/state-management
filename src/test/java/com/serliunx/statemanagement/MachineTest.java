@@ -22,20 +22,23 @@ public class MachineTest {
 	public void testStandardStateMachine() {
 		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.class)
 				.async(false)
+				.states(PrinterState.values())
+				.executor(Executors.newFixedThreadPool(16))
 				.whenLeave(PrinterState.PRINTING, h -> {
 					System.out.println(Thread.currentThread().getName() + ": leave PRINTING");
 				})
-				.states(PrinterState.values())
-				.executor(Executors.newFixedThreadPool(16))
 				.whenEntry(PrinterState.SCANNING, h -> {
 					System.out.println(Thread.currentThread().getName() + ": " + h.getFrom() + " >>> " + h.getTo());
-				}, false)
+				})
 				.whenEntry(PrinterState.PRINTING, h -> {
 					System.out.println(Thread.currentThread().getName() + ": " + h.getFrom() + " >>> " + h.getTo());
-				}, false, Executors.newFixedThreadPool(1))
+				})
 				.exchange(PrinterState.STOPPED, PrinterState.IDLE, h -> {
 					System.out.println(Thread.currentThread().getName() + ": " + h.getFrom() + " >>> " + h.getTo());
 				})
 				.build();
+
+		stateMachine.switchTo(PrinterState.PRINTING);
+		stateMachine.switchNext();
 	}
 }

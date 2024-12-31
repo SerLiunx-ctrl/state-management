@@ -1,7 +1,5 @@
 package com.serliunx.statemanagement.machine.handler;
 
-import com.serliunx.statemanagement.manager.BidirectionalStateManager;
-
 /**
  * 状态处理器入参
  * <p>

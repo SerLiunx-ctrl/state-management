@@ -11,7 +11,7 @@ import com.serliunx.statemanagement.manager.BidirectionalStateManager;
  * <li> 切出指定状态时触发	(离开事件)
  * <li> 从A切换到B状态时触发	(交换事件)
  * <p>
- * 推荐使用{@link StateMachineBuilder} 来构建状态机.
+ * 请使用{@link StateMachineBuilder} 来构建状态机.
  *
  * @author <a href="mailto:serliunx@yeah.net">SerLiunx</a>
  * @version 1.0.0
@@ -22,5 +22,12 @@ import com.serliunx.statemanagement.manager.BidirectionalStateManager;
  */
 public interface StateMachine<S> extends BidirectionalStateManager<S> {
 
-
+    /**
+     * 切换到指定状态
+     * <li> 在使用状态机的情况, 仅切换成功才会触发注册的各种事件.
+     *
+     * @param state 新的状态
+     * @return 切换成功返回真, 否则返回假
+     */
+    boolean switchTo(S state);
 }

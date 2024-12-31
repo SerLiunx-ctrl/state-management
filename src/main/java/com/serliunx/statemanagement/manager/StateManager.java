@@ -1,7 +1,5 @@
 package com.serliunx.statemanagement.manager;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 /**
  * 状态管理器
  * <p>

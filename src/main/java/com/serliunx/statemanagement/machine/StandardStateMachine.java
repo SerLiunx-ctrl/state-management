@@ -149,8 +149,16 @@ public class StandardStateMachine<S> extends AbstractStateManager<S> implements 
 
 	@Override
 	public boolean switchTo(S state) {
+		int i = indexOf(state);
+		if (i == -1 || i == currentIndex()) {
+			return false;
+		}
 		try {
 			writeLock.lock();
+			// 重新检查
+			if (i == currentIndex()) {
+				return false;
+			}
 			S oldState = get();
 			boolean result = super.switchTo(state);
 			if (result) {

@@ -2,7 +2,6 @@ package com.serliunx.statemanagement.machine;
 
 import com.serliunx.statemanagement.machine.handler.StateHandler;
 import com.serliunx.statemanagement.machine.handler.StateHandlerWrapper;
-import com.serliunx.statemanagement.manager.BidirectionalStateManager;
 
 import java.util.*;
 import java.util.concurrent.Executor;

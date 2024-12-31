@@ -61,11 +61,18 @@ public class DefaultUnidirectionalStateManager<S> extends AbstractStateManager<S
 
 	@Override
 	public boolean switchTo(S state) {
+		final int i;
+		if ((i = indexOf(state)) == -1 ||
+				i == currentIndex()) {
+			return false;
+		}
 		try {
 			writeLock.lock();
-			final int i;
-			if ((i = indexOf(state)) == -1 ||
-					(!isLast() && i < currentIndex()) ||
+			// 重新检查
+			if (i == currentIndex()) {
+				return false;
+			}
+			if ((!isLast() && i < currentIndex()) ||
 					(isLast() && i != getDefault())) {
 				return false;
 			}
