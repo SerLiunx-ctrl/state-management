@@ -19,26 +19,30 @@ import java.util.concurrent.Executors;
 public class MachineTest {
 
 	@Test
-	public void testStandardStateMachine() {
-		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.class)
-				.async(false)
-				.states(PrinterState.values())
+	public void testStandardStateMachine() throws Exception {
+		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
+				.async()
+				.standard()
 				.executor(Executors.newFixedThreadPool(16))
 				.whenLeave(PrinterState.PRINTING, h -> {
 					System.out.println(Thread.currentThread().getName() + ": leave PRINTING");
 				})
-				.whenEntry(PrinterState.SCANNING, h -> {
-					System.out.println(Thread.currentThread().getName() + ": " + h.getFrom() + " >>> " + h.getTo());
+				.whenEntry(PrinterState.STOPPING, h -> {
+					System.out.println(Thread.currentThread().getName() + ": entry STOPPING, from " + h.getFrom());
 				})
-				.whenEntry(PrinterState.PRINTING, h -> {
-					System.out.println(Thread.currentThread().getName() + ": " + h.getFrom() + " >>> " + h.getTo());
-				})
-				.exchange(PrinterState.STOPPED, PrinterState.IDLE, h -> {
-					System.out.println(Thread.currentThread().getName() + ": " + h.getFrom() + " >>> " + h.getTo());
+				.whenEntry(PrinterState.STOPPED, h -> {
+					System.out.println(Thread.currentThread().getName() + ": entry STOPPED, from " + h.getFrom());
 				})
 				.build();
 
+		System.out.println(stateMachine.getClass());
+
 		stateMachine.switchTo(PrinterState.PRINTING);
 		stateMachine.switchNext();
+		stateMachine.switchNext();
+
+		System.out.println(stateMachine.current());
+
+		stateMachine.close();
 	}
 }

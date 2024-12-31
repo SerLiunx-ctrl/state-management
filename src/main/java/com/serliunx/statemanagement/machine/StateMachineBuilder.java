@@ -18,7 +18,7 @@ public final class StateMachineBuilder<S> {
 	/**
 	 * 状态管理器
 	 */
-	private List<S> stateList;
+	private final List<S> stateList;
 	/**
 	 * 执行器
 	 */
@@ -27,6 +27,10 @@ public final class StateMachineBuilder<S> {
 	 * 是否异步执行
 	 */
 	private Boolean async;
+	/**
+	 * 状态机类型
+	 */
+	private StateMachineType type = StateMachineType.STANDARD;
 
 	/**
 	 * 各种事件
@@ -35,8 +39,14 @@ public final class StateMachineBuilder<S> {
 	private final Map<S, List<StateHandlerWrapper<S>>> leaveHandlers = new HashMap<>(64);
 	private final Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers = new HashMap<>(64);
 
-	// private-ctor
-	private StateMachineBuilder() {}
+	private StateMachineBuilder(List<S> states) {
+		this.stateList = states;
+	}
+
+	private StateMachineBuilder(S[] states) {
+		this(Arrays.asList(states));
+	}
+
 
 	/**
 	 * 添加交换事件
@@ -189,18 +199,33 @@ public final class StateMachineBuilder<S> {
 	}
 
 	/**
-	 * 设置状态列表
+	 * 指定状态机的类型
+	 * <li> 状态机并发与否并不影响事件的执行逻辑
+	 *
+	 * @param type 类型
 	 */
-	public StateMachineBuilder<S> states(S[] states) {
-		return states(Arrays.asList(states));
+	public StateMachineBuilder<S> type(StateMachineType type) {
+		if (type == null) {
+			throw new NullPointerException();
+		}
+		this.type = type;
+		return this;
 	}
 
 	/**
-	 * 设置状态列表
+	 * 指定状态机的类型为标准型
+	 * <li> 状态机并发与否并不影响事件的执行逻辑
 	 */
-	public StateMachineBuilder<S> states(List<S> states) {
-		stateList = states;
-		return this;
+	public StateMachineBuilder<S> standard() {
+		return type(StateMachineType.STANDARD);
+	}
+
+	/**
+	 * 指定状态机的类型为并发型
+	 * <li> 状态机并发与否并不影响事件的执行逻辑
+	 */
+	public StateMachineBuilder<S> concurrent() {
+		return type(StateMachineType.CONCURRENT);
 	}
 
 	/**
@@ -208,19 +233,33 @@ public final class StateMachineBuilder<S> {
 	 */
 	@SuppressWarnings("unchecked")
 	public <M extends StateMachine<S>> M build() {
-		return (M) new StandardStateMachine<>(stateList, entryHandlers,
-				leaveHandlers, exchangeHandlers, executor, async);
+		if (type == null) {
+			throw new NullPointerException();
+		}
+		if (type.equals(StateMachineType.STANDARD)) {
+			return (M)new StandardStateMachine<>(stateList, entryHandlers,
+					leaveHandlers, exchangeHandlers, executor, async);
+		}
+		throw new IllegalArgumentException("未知的状态机类型: " + type);
 	}
 
 	/**
 	 * 状态机构建器
 	 *
-	 * @param stateClass 状态类
+	 * @param states 状态集合
 	 * @return 状态机构建器实例
-	 * @param <S> 状态类参数
 	 */
-	@SuppressWarnings("all")
-	public static <S> StateMachineBuilder<S> from(Class<? extends S> stateClass) {
-		return new StateMachineBuilder<>();
+	public static <S> StateMachineBuilder<S> from(S[] states) {
+		return new StateMachineBuilder<>(states);
+	}
+
+	/**
+	 * 状态机构建器
+	 *
+	 * @param states 状态集合
+	 * @return 状态机构建器实例
+	 */
+	public static <S> StateMachineBuilder<S> from(List<S> states) {
+		return new StateMachineBuilder<>(states);
 	}
 }
