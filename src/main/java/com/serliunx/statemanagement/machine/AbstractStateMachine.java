@@ -175,12 +175,12 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
                 return false;
             }
             S oldState = get();
-            boolean result = super.switchTo(state);
-            if (result) {
-                S newState = get();
-                invokeHandlers(oldState, newState);
-            }
-            return result;
+
+            updateCurrentIndex(i);
+
+            S newState = get();
+            invokeHandlers(oldState, newState);
+            return true;
         } finally {
             writeLock.unlock();
         }
