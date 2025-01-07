@@ -68,12 +68,10 @@ public class DefaultUnidirectionalStateManager<S> extends AbstractStateManager<S
 		}
 		try {
 			writeLock.lock();
-			// 重新检查
-			if (i == currentIndex()) {
-				return false;
-			}
-			if ((!isLast() && i < currentIndex()) ||
-					(isLast() && i != getDefault())) {
+			final boolean isLast;
+			if (i == currentIndex() ||
+					(!(isLast = isLast()) && i < currentIndex()) ||
+					(isLast && i != getDefault())) {
 				return false;
 			}
 			updateCurrentIndex(i);
