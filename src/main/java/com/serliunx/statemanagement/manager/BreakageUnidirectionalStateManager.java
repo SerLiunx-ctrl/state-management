@@ -87,4 +87,9 @@ public final class BreakageUnidirectionalStateManager<S> extends DefaultUnidirec
     public void reset() {
         throw new UnsupportedOperationException("Cannot reset state for BreakageUnidirectionalStateManager!");
     }
+
+    @Override
+    public boolean isSwitchable() {
+        return !isLast();
+    }
 }

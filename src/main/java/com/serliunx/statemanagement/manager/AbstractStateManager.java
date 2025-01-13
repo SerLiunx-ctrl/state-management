@@ -100,6 +100,11 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 		}
 	}
 
+	@Override
+	public boolean isSwitchable() {
+		return stateList.size() > 1;
+	}
+
 	/**
 	 * 将序号移动至下一个
 	 * <li> 自动归零

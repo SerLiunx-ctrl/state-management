@@ -30,4 +30,13 @@ public interface StateManager<S> {
 	 * 重置回默认状态, 一般为状态集合中的第一个
 	 */
 	void reset();
+
+	/**
+	 * 是否可切换
+	 *
+	 * @return 可切换返回真, 否则返回假
+	 */
+	default boolean isSwitchable() {
+		return true;
+	}
 }

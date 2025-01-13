@@ -29,7 +29,10 @@ public class ManagerTest {
 	@Test
 	public void testBreakageUnidirectionalStateManager() {
 		UnidirectionalStateManager<PrinterState> bum = new BreakageUnidirectionalStateManager<>(PrinterState.values());
-		System.out.println(bum.isCircle());
-		bum.switchNext();
+
+		while (bum.isSwitchable()) {
+			System.out.println(bum.getAndSwitchNext());
+		}
+		System.out.println(bum.current());
 	}
 }
