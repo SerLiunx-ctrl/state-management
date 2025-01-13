@@ -1,5 +1,6 @@
 package com.serliunx.statemanagement;
 
+import com.serliunx.statemanagement.manager.BreakageUnidirectionalStateManager;
 import com.serliunx.statemanagement.manager.DefaultUnidirectionalStateManager;
 import com.serliunx.statemanagement.manager.UnidirectionalStateManager;
 import com.serliunx.statemanagement.support.PrinterState;
@@ -23,5 +24,12 @@ public class ManagerTest {
 
 		System.out.println(unidirectionalStateManager.switchTo(PrinterState.IDLE));
 		System.out.println(unidirectionalStateManager.switchTo(PrinterState.SCANNING));
+	}
+
+	@Test
+	public void testBreakageUnidirectionalStateManager() {
+		UnidirectionalStateManager<PrinterState> bum = new BreakageUnidirectionalStateManager<>(PrinterState.values());
+		System.out.println(bum.isCircle());
+		bum.switchNext();
 	}
 }

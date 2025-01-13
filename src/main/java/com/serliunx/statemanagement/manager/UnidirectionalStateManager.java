@@ -17,7 +17,7 @@ package com.serliunx.statemanagement.manager;
  * @version 1.0.0
  * @since 2024/12/28
  */
-public interface UnidirectionalStateManager<S> extends StateManager<S> {
+public interface UnidirectionalStateManager<S> extends StateManager<S>, CircleStateManager {
 
 	/**
 	 * 切换至下一个状态并返回切换后的状态
