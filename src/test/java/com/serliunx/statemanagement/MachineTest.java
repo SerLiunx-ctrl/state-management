@@ -24,8 +24,8 @@ public class MachineTest {
 				.async()
 				.standard()
 				.executor(Executors.newFixedThreadPool(16))
-				.whenLeave(PrinterState.PRINTING, h -> {
-					System.out.println(Thread.currentThread().getName() + ": leave PRINTING");
+				.whenLeave(PrinterState.IDLE, h -> {
+					System.out.println(Thread.currentThread().getName() + ": leave IDLE");
 				})
 				.whenEntry(PrinterState.STOPPING, h -> {
 					System.out.println(Thread.currentThread().getName() + ": entry STOPPING, from " + h.getFrom());
@@ -35,14 +35,7 @@ public class MachineTest {
 				})
 				.build();
 
-		System.out.println(stateMachine.getClass());
-
-		stateMachine.switchTo(PrinterState.PRINTING);
-		stateMachine.switchNext();
-		stateMachine.switchNext();
-
-		System.out.println(stateMachine.current());
-
+		stateMachine.switchNext(false);
 		stateMachine.close();
 	}
 }

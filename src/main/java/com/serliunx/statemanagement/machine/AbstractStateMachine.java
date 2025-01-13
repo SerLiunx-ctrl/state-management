@@ -81,89 +81,21 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
     }
 
     @Override
-    public S switchPrevAndGet() {
+    public void reset(boolean invokeHandlers) {
         try {
             writeLock.lock();
             S oldState = get();
-            prev();
+            super.reset();
             S newState = get();
-            invokeHandlers(oldState, newState);
-            return newState;
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
         } finally {
             writeLock.unlock();
         }
     }
 
     @Override
-    public S getAndSwitchPrev() {
-        try {
-            writeLock.lock();
-            S oldState = get();
-            prev();
-            S newState = get();
-            invokeHandlers(oldState, newState);
-            return oldState;
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public void switchPrev() {
-        try {
-            writeLock.lock();
-            S oldState = get();
-            prev();
-            S newState = get();
-            invokeHandlers(oldState, newState);
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public S switchNextAndGet() {
-        try {
-            writeLock.lock();
-            S oldState = get();
-            next();
-            S newState = get();
-            invokeHandlers(oldState, newState);
-            return newState;
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public S getAndSwitchNext() {
-        try {
-            writeLock.lock();
-            S oldState = get();
-            next();
-            S newState = get();
-            invokeHandlers(oldState, newState);
-            return oldState;
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public void switchNext() {
-        try {
-            writeLock.lock();
-            S oldState = get();
-            next();
-            S newState = get();
-            invokeHandlers(oldState, newState);
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public boolean switchTo(S state) {
+    public boolean switchTo(S state, boolean invokeHandlers) {
         int i = indexOf(state);
         if (i == -1 || i == currentIndex()) {
             return false;
@@ -179,7 +111,8 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
             updateCurrentIndex(i);
 
             S newState = get();
-            invokeHandlers(oldState, newState);
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
             return true;
         } finally {
             writeLock.unlock();
@@ -187,16 +120,131 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
     }
 
     @Override
-    public void reset() {
+    public S switchPrevAndGet(boolean invokeHandlers) {
         try {
             writeLock.lock();
             S oldState = get();
-            super.reset();
+            prev();
             S newState = get();
-            invokeHandlers(oldState, newState);
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
+            return newState;
         } finally {
             writeLock.unlock();
         }
+    }
+
+    @Override
+    public S getAndSwitchPrev(boolean invokeHandlers) {
+        try {
+            writeLock.lock();
+            S oldState = get();
+            prev();
+            S newState = get();
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
+            return oldState;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public void switchPrev(boolean invokeHandlers) {
+        try {
+            writeLock.lock();
+            S oldState = get();
+            prev();
+            S newState = get();
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public S switchNextAndGet(boolean invokeHandlers) {
+        try {
+            writeLock.lock();
+            S oldState = get();
+            next();
+            S newState = get();
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
+            return newState;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public S getAndSwitchNext(boolean invokeHandlers) {
+        try {
+            writeLock.lock();
+            S oldState = get();
+            next();
+            S newState = get();
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
+            return oldState;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public void switchNext(boolean invokeHandlers) {
+        try {
+            writeLock.lock();
+            S oldState = get();
+            next();
+            S newState = get();
+            if (invokeHandlers)
+                invokeHandlers(oldState, newState);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public S switchPrevAndGet() {
+        return switchPrevAndGet(true);
+    }
+
+    @Override
+    public S getAndSwitchPrev() {
+        return getAndSwitchPrev(true);
+    }
+
+    @Override
+    public void switchPrev() {
+        switchPrev(true);
+    }
+
+    @Override
+    public S switchNextAndGet() {
+        return switchNextAndGet(true);
+    }
+
+    @Override
+    public S getAndSwitchNext() {
+        return getAndSwitchNext(true);
+    }
+
+    @Override
+    public void switchNext() {
+        switchNext(true);
+    }
+
+    @Override
+    public boolean switchTo(S state) {
+        return switchTo(state, true);
+    }
+
+    @Override
+    public void reset() {
+        reset(true);
     }
 
     /**

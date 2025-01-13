@@ -23,6 +23,69 @@ import com.serliunx.statemanagement.manager.BidirectionalStateManager;
 public interface StateMachine<S> extends BidirectionalStateManager<S>, AutoCloseable {
 
     /**
+     * 切换至下一个状态
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     */
+    void switchNext(boolean invokeHandlers);
+
+    /**
+     * 返回并切换至下一个状态
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     * @return 切换前的状态
+     */
+    S getAndSwitchNext(boolean invokeHandlers);
+
+    /**
+     * 切换至下一个状态并返回切换后的状态
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     * @return 切换后的状态
+     */
+    S switchNextAndGet(boolean invokeHandlers);
+
+    /**
+     * 切换至上一个状态
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     */
+    void switchPrev(boolean invokeHandlers);
+
+    /**
+     * 获取当前状态并切换至上一个状态
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     * @return 切换前的状态
+     */
+    S getAndSwitchPrev(boolean invokeHandlers);
+
+    /**
+     * 切换至上一个状态并返回切换后的状态
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     * @return 切换后的状态
+     */
+    S switchPrevAndGet(boolean invokeHandlers);
+
+    /**
+     * 重置回默认状态, 一般为状态集合中的第一个
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     */
+    void reset(boolean invokeHandlers);
+
+    /**
+     * 切换至指定状态
+     * <li> 在使用状态机的情况, 仅切换成功才会触发注册的各种事件.
+     *
+     * @param invokeHandlers    是否唤醒状态处理器
+     * @param state             新的状态
+     * @return 切换成功返回真, 否则返回假
+     */
+    boolean switchTo(S state, boolean invokeHandlers);
+
+    /**
      * 发布事件
      *
      * @param event 事件
