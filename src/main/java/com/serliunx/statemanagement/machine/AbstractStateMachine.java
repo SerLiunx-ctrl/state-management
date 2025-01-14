@@ -269,31 +269,24 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
      * 触发
      */
     private void doInvokeHandlers(List<StateHandlerWrapper<S>> handlerWrappers, S from, S to) {
-        if (handlerWrappers == null) {
+        if (handlerWrappers == null)
             return;
-        }
-        // 全局的异步状态
-        final boolean isGlobalAsync = async != null && async;
-
         handlerWrappers.forEach(hw -> {
             final StateHandler<S> stateHandler;
             if (hw == null ||
-                    (stateHandler = hw.getStateHandler()) == null) {
+                    (stateHandler = hw.getStateHandler()) == null)
                 return;
-            }
-
-            final Executor executorToRun = hw.getExecutor() == null ? executor : hw.getExecutor();
-            final boolean runInAsync = hw.getAsync() == null ? isGlobalAsync : hw.getAsync();
             final StateHandlerProcessParams<S> params = new StateHandlerProcessParams<>(from, to, null);
-
-            if (runInAsync) {
-                if (executorToRun == null) {
+            if (hw.getAsync() == null ?
+                    (this.async != null && this.async) :
+                    hw.getAsync()) {
+                final Executor executor;
+                if ((executor = hw.getExecutor() == null ?
+                        this.executor : hw.getExecutor()) == null)
                     throw new NullPointerException();
-                }
-                executorToRun.execute(() -> stateHandler.handle(params));
-            } else {
+                executor.execute(() -> stateHandler.handle(params));
+            } else
                 stateHandler.handle(params);
-            }
         });
     }
 }
