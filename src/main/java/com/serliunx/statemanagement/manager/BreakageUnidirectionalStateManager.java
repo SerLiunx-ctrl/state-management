@@ -73,8 +73,7 @@ public final class BreakageUnidirectionalStateManager<S> extends DefaultUnidirec
         /*
          *  非最后一个状态且切换后的状态必须在当前状态的下位
          */
-        if (isLast() ||
-                indexOf(state) <= currentIndex()) {
+        if (indexOf(state) <= currentIndex()) {
             if (allowThrow)
                 throw new StateException("The last state has been reached and cannot be switched again!");
             return false;
