@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 
 /**
  * 状态机抽象实现, 实现最基本功能
@@ -31,6 +32,10 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
      * 交换事件集合
      */
     protected final Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers;
+    /**
+     * 事件注册集合
+     */
+    protected final Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries;
     /**
      * 异步执行器
      */
@@ -55,6 +60,7 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
                          Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
                          Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
                          Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
+                         Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
                          Executor executor,
                          Boolean async
     ) {
@@ -64,6 +70,7 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
         this.exchangeHandlers = exchangeHandlers;
         this.executor = executor;
         this.async = async;
+        this.eventRegistries = eventRegistries;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.serliunx.statemanagement;
 
 import com.serliunx.statemanagement.machine.StateMachine;
 import com.serliunx.statemanagement.machine.StateMachineBuilder;
+import com.serliunx.statemanagement.support.PrinterEvent;
 import com.serliunx.statemanagement.support.PrinterState;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class MachineTest {
 	@Test
 	public void testStandardStateMachine() throws Exception {
 		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
-				.async()
+				.async(false)
 				.standard()
 				.executor(Executors.newFixedThreadPool(16))
 				.whenLeave(PrinterState.IDLE, h -> {
@@ -33,9 +34,17 @@ public class MachineTest {
 				.whenEntry(PrinterState.STOPPED, h -> {
 					System.out.println(Thread.currentThread().getName() + ": entry STOPPED, from " + h.getFrom());
 				})
+				.whenHappened(PrinterEvent.TURN_ON, m -> {
+					m.switchTo(PrinterState.SCANNING);
+				})
+				.whenHappened(PrinterEvent.TURN_OFF, m -> {
+					if (m.switchTo(PrinterState.STOPPING))
+						m.switchTo(PrinterState.STOPPED);
+				})
 				.build();
 
-		stateMachine.switchNext(false);
+		stateMachine.publish(PrinterEvent.TURN_ON);
+
 		stateMachine.close();
 	}
 }

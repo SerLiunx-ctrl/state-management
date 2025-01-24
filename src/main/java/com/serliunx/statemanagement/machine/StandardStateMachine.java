@@ -5,6 +5,7 @@ import com.serliunx.statemanagement.machine.handler.StateHandlerWrapper;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 /**
  * 状态机的标准实现
@@ -28,14 +29,18 @@ public class StandardStateMachine<S> extends AbstractStateMachine<S> implements 
 						 Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
 						 Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
 						 Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
+						 Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
 						 Executor executor,
 						 Boolean async
 	) {
-		super(stateList, entryHandlers, leaveHandlers, exchangeHandlers, executor, async);
+		super(stateList, entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
 	}
 
 	@Override
 	public void publish(Object event) {
-
+		List<Consumer<StateMachine<S>>> consumers = eventRegistries.get(event);
+		if (consumers != null) {
+			consumers.forEach(consumer -> consumer.accept(this));
+		}
 	}
 }

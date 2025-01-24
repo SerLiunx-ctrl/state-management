@@ -5,6 +5,7 @@ import com.serliunx.statemanagement.machine.handler.StateHandlerWrapper;
 
 import java.util.*;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 /**
  * 状态机构建
@@ -38,6 +39,7 @@ public final class StateMachineBuilder<S> {
 	private final Map<S, List<StateHandlerWrapper<S>>> entryHandlers = new HashMap<>(64);
 	private final Map<S, List<StateHandlerWrapper<S>>> leaveHandlers = new HashMap<>(64);
 	private final Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers = new HashMap<>(64);
+	private final Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries = new HashMap<>(64);
 
 	private StateMachineBuilder(List<S> states) {
 		this.stateList = states;
@@ -170,6 +172,18 @@ public final class StateMachineBuilder<S> {
 	}
 
 	/**
+	 * 注册当前状态机感兴趣的事件
+	 *
+	 * @param event	事件
+	 * @param logic	切换逻辑
+	 */
+	public StateMachineBuilder<S> whenHappened(Object event, Consumer<StateMachine<S>> logic) {
+		List<Consumer<StateMachine<S>>> consumers = eventRegistries.computeIfAbsent(event, k -> new ArrayList<>());
+		consumers.add(logic);
+		return this;
+	}
+
+	/**
 	 * 指定状态机的执行器
 	 * <p>
 	 * 优先级低于添加事件时指定的执行器
@@ -238,7 +252,7 @@ public final class StateMachineBuilder<S> {
 		}
 		if (type.equals(StateMachineType.STANDARD)) {
 			return (M)new StandardStateMachine<>(stateList, entryHandlers,
-					leaveHandlers, exchangeHandlers, executor, async);
+					leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
 		}
 		throw new IllegalArgumentException("未知的状态机类型: " + type);
 	}
