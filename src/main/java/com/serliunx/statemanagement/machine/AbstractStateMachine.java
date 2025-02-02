@@ -20,32 +20,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> implements StateMachine<S> {
 
-    /**
-     * 进入事件集合
-     */
-    protected final Map<S, List<StateHandlerWrapper<S>>> entryHandlers;
-    /**
-     * 离开事件集合
-     */
-    protected final Map<S, List<StateHandlerWrapper<S>>> leaveHandlers;
-    /**
-     * 交换事件集合
-     */
-    protected final Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers;
-    /**
-     * 事件注册集合
-     */
-    protected final Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries;
-    /**
-     * 异步执行器
-     */
-    protected final Executor executor;
-    /**
-     * 是否异步执行
-     * <p>
-     * 当具体的执行器没有指定是否异步时, 将根据该值决定是否异步执行.
-     */
-    protected final Boolean async;
+    protected final StateMachineContext<S> context;
 
     /**
      * 默认的构造函数
@@ -65,16 +40,12 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
                          Boolean async
     ) {
         super(stateList);
-        this.entryHandlers = entryHandlers;
-        this.leaveHandlers = leaveHandlers;
-        this.exchangeHandlers = exchangeHandlers;
-        this.executor = executor;
-        this.async = async;
-        this.eventRegistries = eventRegistries;
+        context = new StateMachineContext<>(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
     }
 
     @Override
     public void close() throws Exception {
+        final Executor executor = context.executor;
         if (executor == null) {
             return;
         }
@@ -262,14 +233,14 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
      */
     protected final void invokeHandlers(S from, S to) {
         // 触发离开处理器
-        doInvokeHandlers(leaveHandlers.get(from), from, to);
+        doInvokeHandlers(context.leaveHandlers.get(from), from, to);
 
         // 触发进入处理器
-        doInvokeHandlers(entryHandlers.get(to), from, to);
+        doInvokeHandlers(context.entryHandlers.get(to), from, to);
 
         // 触发交换处理器
         final String key = from.toString() + "-" + to.toString();
-        doInvokeHandlers(exchangeHandlers.get(key), from, to);
+        doInvokeHandlers(context.exchangeHandlers.get(key), from, to);
     }
 
     /**
@@ -285,11 +256,11 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
                 return;
             final StateHandlerProcessParams<S> params = new StateHandlerProcessParams<>(from, to, null);
             if (hw.getAsync() == null ?
-                    (this.async != null && this.async) :
+                    (context.async != null && context.async) :
                     hw.getAsync()) {
                 final Executor executor;
                 if ((executor = hw.getExecutor() == null ?
-                        this.executor : hw.getExecutor()) == null)
+                        context.executor : hw.getExecutor()) == null)
                     throw new NullPointerException();
                 executor.execute(() -> stateHandler.handle(params));
             } else

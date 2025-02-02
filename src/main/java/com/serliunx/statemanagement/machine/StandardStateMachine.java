@@ -38,7 +38,7 @@ public class StandardStateMachine<S> extends AbstractStateMachine<S> implements 
 
 	@Override
 	public void publish(Object event) {
-		List<Consumer<StateMachine<S>>> consumers = eventRegistries.get(event);
+		List<Consumer<StateMachine<S>>> consumers = context.eventRegistries.get(event);
 		if (consumers != null) {
 			consumers.forEach(consumer -> consumer.accept(this));
 		}
