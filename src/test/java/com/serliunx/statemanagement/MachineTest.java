@@ -5,7 +5,6 @@ import com.serliunx.statemanagement.machine.StateMachine;
 import com.serliunx.statemanagement.machine.StateMachineBuilder;
 import com.serliunx.statemanagement.support.PrinterEvent;
 import com.serliunx.statemanagement.support.PrinterState;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.concurrent.Executors;
@@ -17,7 +16,6 @@ import java.util.concurrent.Executors;
  * @version 1.0.0
  * @since 2024/12/28
  */
-@Slf4j
 public class MachineTest {
 
 	@Test

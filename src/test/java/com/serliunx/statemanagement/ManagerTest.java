@@ -4,7 +4,6 @@ import com.serliunx.statemanagement.manager.BreakageUnidirectionalStateManager;
 import com.serliunx.statemanagement.manager.DefaultUnidirectionalStateManager;
 import com.serliunx.statemanagement.manager.UnidirectionalStateManager;
 import com.serliunx.statemanagement.support.PrinterState;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 /**
@@ -14,7 +13,6 @@ import org.junit.Test;
  * @version 1.0.0
  * @since 2024/12/28
  */
-@Slf4j
 public class ManagerTest {
 
 	@Test
