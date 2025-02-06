@@ -48,4 +48,18 @@ public class MachineTest {
 
 		stateMachine.close();
 	}
+
+	@Test
+	public void testConcurrentStateMachine() throws Exception {
+		ConcurrentStateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
+				.whenEntry(PrinterState.STOPPING, h -> {
+					System.out.println(1111);
+				})
+				.concurrent()
+				.build();
+
+		System.out.println(stateMachine.compareAndSet(PrinterState.IDLE, PrinterState.STOPPING, true));
+
+		stateMachine.close();
+	}
 }

@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
+ * 并发型状态机的默认实现, 内置的状态序列切换使用CAS实现.
+ *
  * @author <a href="mailto:serliunx@yeah.net">SerLiunx</a>
  * @version 1.0.0
  * @since 2025/2/6
@@ -32,11 +34,24 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     @Override
     public boolean compareAndSet(S expectedValue, S newValue) {
+        return compareAndSet(expectedValue, newValue, false);
+    }
+
+    @Override
+    public boolean compareAndSet(S expectedValue, S newValue, boolean invokeHandlers) {
         int current = indexOf(expectedValue);
         int newIndex = indexOf(newValue);
         if (current == -1 || newIndex == -1)
             return false;
-        return index.compareAndSet(current, newIndex);
+
+        S oldState = get(index.get());
+        boolean result = index.compareAndSet(current, newIndex);
+        if (result && invokeHandlers) {
+            S newState = get(index.get());
+            invokeHandlers(oldState, newState);
+        }
+
+        return result;
     }
 
     /**
@@ -48,8 +63,11 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
     public void reset(boolean invokeHandlers) {
         if (isDefault())
             return;
+        S oldState = get(index.get());
         exchangeToTarget(0);
-        // TODO invokeHandlers
+        S newState = get(index.get());
+        if (invokeHandlers)
+            invokeHandlers(oldState, newState);
     }
 
     @Override
@@ -59,14 +77,17 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
                 i == index.get()) {
             return false;
         }
+        S oldState = get(index.get());
         exchangeToTarget(i);
+        if (invokeHandlers)
+            invokeHandlers(oldState, state);
         return true;
     }
 
     @Override
     public S switchPrevAndGet(boolean invokeHandlers) {
         S oldState = get(index.get());
-
+        exchangeToPrev();
         S newState = get(index.get());
         if (invokeHandlers)
             invokeHandlers(oldState, newState);
@@ -75,27 +96,50 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     @Override
     public S getAndSwitchPrev(boolean invokeHandlers) {
-        return super.getAndSwitchPrev(invokeHandlers);
+        S oldState = get(index.get());
+        exchangeToPrev();
+        S newState = get(index.get());
+        if (invokeHandlers)
+            invokeHandlers(oldState, newState);
+        return oldState;
     }
 
     @Override
     public void switchPrev(boolean invokeHandlers) {
-        super.switchPrev(invokeHandlers);
+        S oldState = get(index.get());
+        exchangeToPrev();
+        S newState = get(index.get());
+        if (invokeHandlers)
+            invokeHandlers(oldState, newState);
     }
 
     @Override
     public S switchNextAndGet(boolean invokeHandlers) {
-        return super.switchNextAndGet(invokeHandlers);
+        S oldState = get(index.get());
+        exchangeToNext();
+        S newState = get(index.get());
+        if (invokeHandlers)
+            invokeHandlers(oldState, newState);
+        return newState;
     }
 
     @Override
     public S getAndSwitchNext(boolean invokeHandlers) {
-        return super.getAndSwitchNext(invokeHandlers);
+        S oldState = get(index.get());
+        exchangeToNext();
+        S newState =get(index.get());
+        if (invokeHandlers)
+            invokeHandlers(oldState, newState);
+        return oldState;
     }
 
     @Override
     public void switchNext(boolean invokeHandlers) {
-        super.switchNext(invokeHandlers);
+        S oldState = get(index.get());
+        exchangeToNext();
+        S newState = get(index.get());
+        if (invokeHandlers)
+            invokeHandlers(oldState, newState);
     }
 
     @Override
@@ -106,15 +150,32 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
     /**
      * 是否为默认状态
      */
-    private boolean isDefault() {
+    protected boolean isDefault() {
         return index.get() == 0;
     }
 
     /**
      * 移动下标至上一个状态
+     * <li> 使用CAS一直尝试, 直到成功
      */
-    public void exchangeToPrev() {
+    protected void exchangeToPrev() {
         final int size = size();
+        int currentValue;
+        do {
+            currentValue = index.get();
+        } while (!index.compareAndSet(currentValue, currentValue == 0 ? size - 1 : currentValue - 1));
+    }
+
+    /**
+     * 移动下标至下一个状态
+     * <li> 使用CAS一直尝试, 直到成功
+     */
+    protected void exchangeToNext() {
+        final int size = size();
+        int currentValue;
+        do {
+            currentValue = index.get();
+        } while (!index.compareAndSet(currentValue, currentValue == size - 1 ? 0 : currentValue + 1));
     }
 
     /**
@@ -123,7 +184,7 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
      *
      * @param target    目标值
      */
-    private void exchangeToTarget(int target) {
+    protected void exchangeToTarget(int target) {
         int currentValue;
         do {
             currentValue = index.get();
