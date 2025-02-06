@@ -253,6 +253,9 @@ public final class StateMachineBuilder<S> {
 		if (type.equals(StateMachineType.STANDARD)) {
 			return (M)new StandardStateMachine<>(stateList, entryHandlers,
 					leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
+		} else if (type.equals(StateMachineType.CONCURRENT)) {
+			return (M)new DefaultConcurrentStateMachine<>(stateList, entryHandlers,
+					leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
 		}
 		throw new IllegalArgumentException("未知的状态机类型: " + type);
 	}

@@ -100,4 +100,7 @@ public interface StateMachine<S> extends BidirectionalStateManager<S>, AutoClose
      * @return 切换成功返回真, 否则返回假
      */
     boolean switchTo(S state);
+
+    @Override
+    default void close() throws Exception {}
 }

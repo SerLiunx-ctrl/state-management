@@ -32,6 +32,12 @@ public interface StateManager<S> {
 	void reset();
 
 	/**
+	 * 获取当前状态数量
+	 * @return 数量
+	 */
+	int size();
+
+	/**
 	 * 是否可切换
 	 *
 	 * @return 可切换返回真, 否则返回假

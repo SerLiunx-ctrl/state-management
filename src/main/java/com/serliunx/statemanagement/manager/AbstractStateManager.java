@@ -101,6 +101,11 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	}
 
 	@Override
+	public int size() {
+		return stateList.size();
+	}
+
+	@Override
 	public boolean isSwitchable() {
 		return stateList.size() > 1;
 	}
@@ -137,6 +142,16 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	 * @return 当前状态
 	 */
 	protected S get() {
+		return stateList.get(index);
+	}
+
+	/**
+	 * 获取指定下标的状态
+	 *
+	 * @param index	下标
+	 * @return 状态
+	 */
+	protected S get(int index) {
 		return stateList.get(index);
 	}
 

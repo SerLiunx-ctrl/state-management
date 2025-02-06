@@ -1,5 +1,6 @@
 package com.serliunx.statemanagement;
 
+import com.serliunx.statemanagement.machine.ConcurrentStateMachine;
 import com.serliunx.statemanagement.machine.StateMachine;
 import com.serliunx.statemanagement.machine.StateMachineBuilder;
 import com.serliunx.statemanagement.support.PrinterEvent;
