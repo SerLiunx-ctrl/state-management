@@ -186,6 +186,14 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
     }
 
     @Override
+    public void publish(Object event) {
+        List<Consumer<StateMachine<S>>> consumers = context.eventRegistries.get(event);
+        if (consumers != null) {
+            consumers.forEach(consumer -> consumer.accept(this));
+        }
+    }
+
+    @Override
     public S switchPrevAndGet() {
         return switchPrevAndGet(true);
     }

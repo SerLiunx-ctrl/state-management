@@ -35,12 +35,4 @@ public class StandardStateMachine<S> extends AbstractStateMachine<S> implements 
 	) {
 		super(stateList, entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
 	}
-
-	@Override
-	public void publish(Object event) {
-		List<Consumer<StateMachine<S>>> consumers = context.eventRegistries.get(event);
-		if (consumers != null) {
-			consumers.forEach(consumer -> consumer.accept(this));
-		}
-	}
 }

@@ -143,8 +143,8 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
     }
 
     @Override
-    public void publish(Object event) {
-
+    public S current() {
+        return get(index.get());
     }
 
     /**
