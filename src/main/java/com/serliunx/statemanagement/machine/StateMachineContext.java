@@ -1,6 +1,7 @@
 package com.serliunx.statemanagement.machine;
 
 import com.serliunx.statemanagement.machine.handler.StateHandlerWrapper;
+import com.serliunx.statemanagement.support.ExecutorUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,18 @@ public final class StateMachineContext<S> {
 		this.entryHandlers = entryHandlers;
 		this.leaveHandlers = leaveHandlers;
 		this.exchangeHandlers = exchangeHandlers;
-		this.executor = executor;
+		this.executor = executorAutoConfiguration(executor);
 		this.async = async;
 		this.eventRegistries = eventRegistries;
+	}
+
+	/**
+	 * 执行器为空时自动创建一个适合当前操作系统的执行器（线程池）
+	 */
+	private Executor executorAutoConfiguration(Executor source) {
+		if (source == null) {
+			return ExecutorUtils.adaptiveThreadPool();
+		}
+		return source;
 	}
 }

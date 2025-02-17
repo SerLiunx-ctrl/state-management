@@ -21,9 +21,8 @@ public class MachineTest {
 	@Test
 	public void testStandardStateMachine() throws Exception {
 		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
-				.async(false)
+				.async(true)
 				.standard()
-				.executor(Executors.newFixedThreadPool(16))
 				.whenLeave(PrinterState.IDLE, h -> {
 					System.out.println(Thread.currentThread().getName() + ": leave IDLE");
 				})
