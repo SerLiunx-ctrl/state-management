@@ -1,11 +1,15 @@
 package com.serliunx.statemanagement.machine;
 
 import com.serliunx.statemanagement.machine.handler.StateHandlerWrapper;
+import com.serliunx.statemanagement.support.DefaultCountableRejectedExecutionHandler;
 import com.serliunx.statemanagement.support.ExecutorUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -62,7 +66,7 @@ public final class StateMachineContext<S> {
 	 */
 	private Executor executorAutoConfiguration(Executor source) {
 		if (source == null) {
-			return ExecutorUtils.adaptiveThreadPool();
+			return ExecutorUtils.adaptiveThreadPool(new DefaultCountableRejectedExecutionHandler());
 		}
 		return source;
 	}

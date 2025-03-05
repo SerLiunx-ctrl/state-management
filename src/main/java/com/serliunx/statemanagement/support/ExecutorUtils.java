@@ -1,9 +1,6 @@
 package com.serliunx.statemanagement.support;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 线程池相关工具类
@@ -22,10 +19,11 @@ public final class ExecutorUtils {
  	 *
 	 * @return 执行器(线程池)
 	 */
-	public static Executor adaptiveThreadPool() {
+	public static Executor adaptiveThreadPool(RejectedExecutionHandler rejectedExecutionHandler) {
 		final int processors = Runtime.getRuntime().availableProcessors();
 		return new ThreadPoolExecutor(processors * 2, processors * 4, 5,
-				TimeUnit.MINUTES, new ArrayBlockingQueue<>(processors * 8), new NamedThreadFactory("state-process-%s"));
+				TimeUnit.MINUTES, new ArrayBlockingQueue<>(processors * 8),
+				new NamedThreadFactory("state-process-%s"), rejectedExecutionHandler);
 	}
 
 }

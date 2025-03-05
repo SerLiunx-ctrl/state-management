@@ -42,8 +42,6 @@ public class MachineTest {
 				.build();
 
 		stateMachine.publish(PrinterEvent.TURN_ON);
-
-		stateMachine.close();
 	}
 
 	@Test

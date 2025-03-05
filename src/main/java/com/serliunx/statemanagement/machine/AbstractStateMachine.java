@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -20,6 +21,9 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> implements StateMachine<S> {
 
+    /**
+     * 状态机上下文
+     */
     protected final StateMachineContext<S> context;
 
     /**
@@ -52,6 +56,9 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
         if (executor instanceof ExecutorService) {
             ExecutorService es = (ExecutorService) executor;
             es.shutdown();
+            if (!es.awaitTermination(10, TimeUnit.SECONDS)) {
+                es.shutdownNow();
+            }
         } else if (executor instanceof AutoCloseable) {
             AutoCloseable ac = (AutoCloseable) executor;
             ac.close();
