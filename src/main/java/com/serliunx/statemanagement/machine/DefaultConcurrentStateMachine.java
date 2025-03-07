@@ -44,10 +44,10 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
         if (current == -1 || newIndex == -1)
             return false;
 
-        S oldState = get(index.get());
+        S oldState = get(current);
         boolean result = index.compareAndSet(current, newIndex);
         if (result && invokeHandlers) {
-            S newState = get(index.get());
+            S newState = get(newIndex);
             invokeHandlers(oldState, newState);
         }
 
