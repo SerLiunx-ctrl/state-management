@@ -7,11 +7,6 @@
     <groupId>com.serliunx</groupId>
     <artifactId>state-management</artifactId>
     <version>1.0.0-alpha</version>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>state-management-core</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
