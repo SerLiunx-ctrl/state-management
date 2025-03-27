@@ -7,8 +7,6 @@ import com.serliunx.statemanagement.support.PrinterEvent;
 import com.serliunx.statemanagement.support.PrinterState;
 import org.junit.Test;
 
-import java.util.concurrent.Executors;
-
 /**
  * 状态机测试
  *
@@ -21,23 +19,12 @@ public class MachineTest {
 	@Test
 	public void testStandardStateMachine() throws Exception {
 		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
-				.async(false)
+				.async(true)
 				.standard()
-				.exchange(PrinterState.IDLE, PrinterState.SCANNING, h -> {
-					System.out.println("hello~");
-				})
-				.whenLeave(PrinterState.IDLE, h -> {
-					System.out.println(Thread.currentThread().getName() + ": leave IDLE");
-				})
-				.whenEntry(PrinterState.STOPPING, h -> {
-					System.out.println(Thread.currentThread().getName() + ": entry STOPPING, from " + h.getFrom());
-				})
-				.whenEntry(PrinterState.STOPPED, h -> {
-					System.out.println(Thread.currentThread().getName() + ": entry STOPPED, from " + h.getFrom());
-				})
+				.withInitial(PrinterState.STOPPING)
 				.build();
 
-		stateMachine.switchTo(PrinterState.SCANNING);
+		System.out.println(stateMachine.current());
 	}
 
 	@Test

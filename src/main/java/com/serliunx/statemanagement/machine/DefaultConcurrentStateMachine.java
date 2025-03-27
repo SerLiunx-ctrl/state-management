@@ -23,13 +23,15 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
     private final AtomicInteger index = new AtomicInteger(0);
 
     DefaultConcurrentStateMachine(List<S> stateList,
-                                         Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
-                                         Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
-                                         Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
-                                         Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
-                                         Executor executor,
-                                         Boolean async) {
-        super(stateList, entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
+                                  Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
+                                  Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
+                                  Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
+                                  Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
+                                  Executor executor,
+                                  Boolean async,
+                                  S initialState
+    ) {
+        super(stateList, new StateMachineContext<>(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async, initialState));
     }
 
     @Override

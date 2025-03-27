@@ -6,7 +6,6 @@ import com.serliunx.statemanagement.machine.handler.StateHandlerWrapper;
 import com.serliunx.statemanagement.manager.AbstractStateManager;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,22 +28,15 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
     /**
      * 默认的构造函数
      *
-     * @param entryHandlers 	进入事件处理器集合
-     * @param leaveHandlers 	离开事件处理器集合
-     * @param exchangeHandlers	交换事件处理器集合
-     * @param executor 			异步执行器
-     * @param async 			是否异步执行
+     * @param stateList 状态列表
+     * @param context   状态机上下文
      */
-    AbstractStateMachine(List<S> stateList,
-                         Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
-                         Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
-                         Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
-                         Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
-                         Executor executor,
-                         Boolean async
-    ) {
+    public AbstractStateMachine(List<S> stateList, StateMachineContext<S> context) {
         super(stateList);
-        context = new StateMachineContext<>(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
+        this.context = context;
+
+        // 设置初始状态
+        tryInitialState();
     }
 
     @Override
@@ -302,5 +294,14 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
             } else
                 stateHandler.handle(params);
         });
+    }
+
+    /**
+     * 尝试设置初始状态(如果有指定的话)
+     */
+    private void tryInitialState() {
+        if (context.initialState != null) {
+            switchTo(context.initialState, false);
+        }
     }
 }

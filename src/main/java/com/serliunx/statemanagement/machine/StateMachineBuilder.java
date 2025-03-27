@@ -32,6 +32,10 @@ public final class StateMachineBuilder<S> {
 	 * 状态机类型
 	 */
 	private StateMachineType type = StateMachineType.STANDARD;
+	/**
+	 * 初始化状态
+	 */
+	private S initialState;
 
 	/**
 	 * 各种事件
@@ -49,6 +53,15 @@ public final class StateMachineBuilder<S> {
 		this(Arrays.asList(states));
 	}
 
+	/**
+	 * 定义初始状态
+	 *
+	 * @param initialState	初始状态
+	 */
+	public StateMachineBuilder<S> withInitial(S initialState) {
+		this.initialState = initialState;
+		return this;
+	}
 
 	/**
 	 * 添加交换事件
@@ -252,10 +265,10 @@ public final class StateMachineBuilder<S> {
 		}
 		if (type.equals(StateMachineType.STANDARD)) {
 			return (M)new StandardStateMachine<>(stateList, entryHandlers,
-					leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
+					leaveHandlers, exchangeHandlers, eventRegistries, executor, async, initialState);
 		} else if (type.equals(StateMachineType.CONCURRENT)) {
 			return (M)new DefaultConcurrentStateMachine<>(stateList, entryHandlers,
-					leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
+					leaveHandlers, exchangeHandlers, eventRegistries, executor, async, initialState);
 		}
 		throw new IllegalArgumentException("未知的状态机类型: " + type);
 	}

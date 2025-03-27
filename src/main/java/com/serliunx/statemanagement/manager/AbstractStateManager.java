@@ -27,6 +27,11 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	private volatile int index;
 
 	/**
+	 * 默认状态序号
+	 */
+	private int defaultIndex = 0;
+
+	/**
 	 * 锁
 	 */
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -180,7 +185,7 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	 * @return 是第一个时返回真, 否则返回假.
 	 */
 	protected boolean isFirst() {
-		return index == getDefault();
+		return index == 0;
 	}
 
 	/**
@@ -203,6 +208,15 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	 * 状态序号默认值(等同于默认状态)
 	 */
 	protected int getDefault() {
-		return 0;
+		return defaultIndex;
+	}
+
+	/**
+	 * 设置默认值
+	 *
+	 * @param defaultIndex	默认值
+	 */
+	protected void setDefault(int defaultIndex) {
+		this.defaultIndex = defaultIndex;
 	}
 }

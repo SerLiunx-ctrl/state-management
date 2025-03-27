@@ -7,9 +7,6 @@ import com.serliunx.statemanagement.support.ExecutorUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -47,13 +44,18 @@ public final class StateMachineContext<S> {
 	 * 当具体的执行器没有指定是否异步时, 将根据该值决定是否异步执行.
 	 */
 	final Boolean async;
+	/**
+	 * 初始化状态
+	 */
+	final S initialState;
 
-	StateMachineContext(Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
-						 Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
-						 Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
-						 Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
-						 Executor executor,
-						 Boolean async
+	public StateMachineContext(Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
+							   Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
+							   Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
+							   Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
+							   Executor executor,
+							   Boolean async,
+							   S initialState
 	) {
 		this.entryHandlers = entryHandlers;
 		this.leaveHandlers = leaveHandlers;
@@ -61,6 +63,17 @@ public final class StateMachineContext<S> {
 		this.executor = executorAutoConfiguration(executor);
 		this.async = async;
 		this.eventRegistries = eventRegistries;
+		this.initialState = initialState;
+	}
+
+	public StateMachineContext(Map<S, List<StateHandlerWrapper<S>>> entryHandlers,
+						 Map<S, List<StateHandlerWrapper<S>>> leaveHandlers,
+						 Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
+						 Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
+						 Executor executor,
+						 Boolean async
+	) {
+		this(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async, null);
 	}
 
 	/**

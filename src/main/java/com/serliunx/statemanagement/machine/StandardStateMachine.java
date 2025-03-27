@@ -31,8 +31,10 @@ public class StandardStateMachine<S> extends AbstractStateMachine<S> implements 
 						 Map<String, List<StateHandlerWrapper<S>>> exchangeHandlers,
 						 Map<Object, List<Consumer<StateMachine<S>>>> eventRegistries,
 						 Executor executor,
-						 Boolean async
+						 Boolean async,
+						 S initialState
 	) {
-		super(stateList, entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async);
+		super(stateList, new StateMachineContext<>(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries,
+				executor, async, initialState));
 	}
 }
