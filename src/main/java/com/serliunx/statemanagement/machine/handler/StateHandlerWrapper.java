@@ -11,7 +11,6 @@ import java.util.concurrent.Executor;
  * @version 1.0.0
  * @since 2024/12/28
  */
-@SuppressWarnings("all")
 public final class StateHandlerWrapper<S> {
 
 	/**

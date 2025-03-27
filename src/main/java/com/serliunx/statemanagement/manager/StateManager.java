@@ -33,6 +33,7 @@ public interface StateManager<S> {
 
 	/**
 	 * 获取当前状态数量
+	 *
 	 * @return 数量
 	 */
 	int size();

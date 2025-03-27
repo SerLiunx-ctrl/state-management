@@ -9,7 +9,6 @@ package com.serliunx.statemanagement.machine.handler;
  * @version 1.0.0
  * @since 2024/12/28
  */
-@SuppressWarnings("all")
 public final class StateHandlerProcessParams<S> {
 
 	/**
@@ -29,7 +28,6 @@ public final class StateHandlerProcessParams<S> {
 	 * @param from 						原状态
 	 * @param to 						目标状态
 	 * @param attach 					附加参数
-	 * @param bidirectionalStateManager 状态机内置的状态管理器
 	 */
 	public StateHandlerProcessParams(S from, S to, Object attach) {
 		this.from = from;

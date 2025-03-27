@@ -21,8 +21,11 @@ public class MachineTest {
 	@Test
 	public void testStandardStateMachine() throws Exception {
 		StateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
-				.async(true)
+				.async(false)
 				.standard()
+				.exchange(PrinterState.IDLE, PrinterState.SCANNING, h -> {
+					System.out.println("hello~");
+				})
 				.whenLeave(PrinterState.IDLE, h -> {
 					System.out.println(Thread.currentThread().getName() + ": leave IDLE");
 				})
@@ -32,28 +35,26 @@ public class MachineTest {
 				.whenEntry(PrinterState.STOPPED, h -> {
 					System.out.println(Thread.currentThread().getName() + ": entry STOPPED, from " + h.getFrom());
 				})
-				.whenHappened(PrinterEvent.TURN_ON, m -> {
-					m.switchTo(PrinterState.SCANNING);
-				})
-				.whenHappened(PrinterEvent.TURN_OFF, m -> {
-					if (m.switchTo(PrinterState.STOPPING))
-						m.switchTo(PrinterState.STOPPED);
-				})
 				.build();
 
-		stateMachine.publish(PrinterEvent.TURN_ON);
+		stateMachine.switchTo(PrinterState.SCANNING);
 	}
 
 	@Test
 	public void testConcurrentStateMachine() throws Exception {
 		ConcurrentStateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
+				.async()
 				.whenEntry(PrinterState.STOPPING, h -> {
 					System.out.println(1111);
+				})
+				.whenHappened(PrinterEvent.TURN_OFF, l -> {
+					if (l.switchTo(PrinterState.STOPPING))
+						l.switchTo(PrinterState.STOPPED);
 				})
 				.concurrent()
 				.build();
 
-		System.out.println(stateMachine.compareAndSet(PrinterState.IDLE, PrinterState.STOPPING, true));
+		stateMachine.publish(PrinterEvent.TURN_OFF);
 
 		stateMachine.close();
 	}

@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
+ * 状态机上下文集合, 用于构建参数封装
+ *
  * @author <a href="mailto:serliunx@yeah.net">SerLiunx</a>
  * @version 1.0.0
  * @since 2025/2/2
