@@ -38,6 +38,7 @@ public class MachineTest {
 					if (l.switchTo(PrinterState.STOPPING))
 						l.switchTo(PrinterState.STOPPED);
 				})
+				.withInitial(PrinterState.STOPPING)
 				.concurrent()
 				.build();
 

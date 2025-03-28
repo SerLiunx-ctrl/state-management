@@ -34,9 +34,6 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
     public AbstractStateMachine(List<S> stateList, StateMachineContext<S> context) {
         super(stateList);
         this.context = context;
-
-        // 设置初始状态
-        tryInitialState();
     }
 
     @Override
@@ -250,58 +247,13 @@ public abstract class AbstractStateMachine<S> extends AbstractStateManager<S> im
      */
     protected final void invokeHandlers(S from, S to) {
         // 触发离开处理器
-        doInvokeHandlers(context.leaveHandlers.get(from), from, to);
+        HandlerInvocationDelegate.doInvokeHandlers(context, context.leaveHandlers.get(from), from, to);
 
         // 触发进入处理器
-        doInvokeHandlers(context.entryHandlers.get(to), from, to);
+        HandlerInvocationDelegate.doInvokeHandlers(context, context.entryHandlers.get(to), from, to);
 
         // 触发交换处理器
         final String key = from.toString() + "-" + to.toString();
-        doInvokeHandlers(context.exchangeHandlers.get(key), from, to);
-    }
-
-    /**
-     * 触发
-     */
-    private void doInvokeHandlers(List<StateHandlerWrapper<S>> handlerWrappers, S from, S to) {
-        if (handlerWrappers == null)
-            return;
-        handlerWrappers.forEach(hw -> {
-            final StateHandler<S> stateHandler;
-            if (hw == null ||
-                    (stateHandler = hw.getStateHandler()) == null)
-                return;
-            final StateHandlerProcessParams<S> params = new StateHandlerProcessParams<>(from, to, null);
-
-            /*
-             * 一、异步逻辑校验: 首先判断是否需要异步执行状态处理器, 具体的状态逻辑处理器优先级大于全局
-             * 即： 如果全局指定了同步执行, 但此时特定的状态处理器注册时指定为异步执行的话. 该处理器
-             * 为异步执行.
-             *
-             * 二、 当确定了为异步执行时会选择合适的异步执行器(通常都是线程池), 如果状态处理器注册
-             * 时指定了异步执行器, 则优先使用该异步执行器；反则会使用全局的异步执行器。如果上一步骤
-             * 中确定为异步执行但当前步骤没有寻找到合适的异步执行器则会报空指针异常(当前版本不会出现)
-             */
-            if (hw.getAsync() == null ?
-                    (context.async != null && context.async) :
-                    hw.getAsync()) {
-                final Executor executor;
-                if ((executor = hw.getExecutor() == null ?
-                        context.executor : hw.getExecutor()) == null)
-                    // 不应该发生
-                    throw new Error();
-                executor.execute(() -> stateHandler.handle(params));
-            } else
-                stateHandler.handle(params);
-        });
-    }
-
-    /**
-     * 尝试设置初始状态(如果有指定的话)
-     */
-    private void tryInitialState() {
-        if (context.initialState != null) {
-            switchTo(context.initialState, false);
-        }
+        HandlerInvocationDelegate.doInvokeHandlers(context, context.exchangeHandlers.get(key), from, to);
     }
 }

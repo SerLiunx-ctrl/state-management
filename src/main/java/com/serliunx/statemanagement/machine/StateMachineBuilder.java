@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * @version 1.0.0
  * @since 2024/12/28
  */
-public final class StateMachineBuilder<S> {
+public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 
 	/**
 	 * 状态管理器
@@ -63,16 +63,7 @@ public final class StateMachineBuilder<S> {
 		return this;
 	}
 
-	/**
-	 * 添加交换事件
-	 * <li> 从A状态切换至B状态时触发
-	 *
-	 * @param from		源状态
-	 * @param to		目的状态
-	 * @param handler	处理器
-	 * @param async		是否异步执行
-	 * @param executor	异步执行器, 异步执行时将使用, 不指定时将使用状态机内置的执行器
-	 */
+	@Override
 	public StateMachineBuilder<S> exchange(S from, S to, StateHandler<S> handler, Boolean async, Executor executor) {
 		final String key = from.toString() + "-" + to.toString();
 		final List<StateHandlerWrapper<S>> stateHandlerWrappers = exchangeHandlers.computeIfAbsent(key,
@@ -81,40 +72,17 @@ public final class StateMachineBuilder<S> {
 		return this;
 	}
 
-	/**
-	 * 添加交换事件
-	 * <li> 从A状态切换至B状态时触发
-	 *
-	 * @param from		源状态
-	 * @param to		目的状态
-	 * @param handler	处理器
-	 * @param async		是否异步执行
-	 */
+	@Override
 	public StateMachineBuilder<S> exchange(S from, S to, StateHandler<S> handler, Boolean async) {
 		return exchange(from, to, handler, async, null);
 	}
 
-	/**
-	 * 添加交换事件
-	 * <li> 从A状态切换至B状态时触发
-	 *
-	 * @param from		源状态
-	 * @param to		目的状态
-	 * @param handler	处理器
-	 */
+	@Override
 	public StateMachineBuilder<S> exchange(S from, S to, StateHandler<S> handler) {
 		return exchange(from, to, handler, null);
 	}
 
-	/**
-	 * 添加离开事件
-	 * <li> 从指定状态切换到别的状态时执行的逻辑
-	 *
-	 * @param state		状态
-	 * @param handler	处理逻辑
-	 * @param async		是否异步执行
-	 * @param executor	异步执行器, 异步执行时将使用, 不指定时将使用状态机内置的执行器
-	 */
+	@Override
 	public StateMachineBuilder<S> whenLeave(S state, StateHandler<S> handler, Boolean async, Executor executor) {
 		final List<StateHandlerWrapper<S>> stateHandlerWrappers = leaveHandlers.computeIfAbsent(state,
 				k -> new ArrayList<>());
@@ -122,38 +90,17 @@ public final class StateMachineBuilder<S> {
 		return this;
 	}
 
-	/**
-	 * 添加离开事件
-	 * <li> 从指定状态切换到别的状态时执行的逻辑
-	 *
-	 * @param state		状态
-	 * @param handler	处理逻辑
-	 * @param async		是否异步执行
-	 */
+	@Override
 	public StateMachineBuilder<S> whenLeave(S state, StateHandler<S> handler, Boolean async) {
 		return whenLeave(state, handler, async, null);
 	}
 
-	/**
-	 * 添加离开事件
-	 * <li> 从指定状态切换到别的状态时执行的逻辑
-	 *
-	 * @param state		状态
-	 * @param handler	处理逻辑
-	 */
+	@Override
 	public StateMachineBuilder<S> whenLeave(S state, StateHandler<S> handler) {
 		return whenLeave(state, handler, null);
 	}
 
-	/**
-	 * 添加进入事件
-	 * <li> 切换到了指定状态时执行的逻辑
-	 *
-	 * @param state		状态
-	 * @param handler	处理逻辑
-	 * @param async		是否异步执行
-	 * @param executor	异步执行器, 异步执行时将使用, 不指定时将使用状态机内置的执行器
-	 */
+	@Override
 	public StateMachineBuilder<S> whenEntry(S state, StateHandler<S> handler, Boolean async, Executor executor) {
 		final List<StateHandlerWrapper<S>> stateHandlerWrappers = entryHandlers.computeIfAbsent(state,
 				k -> new ArrayList<>());
@@ -161,25 +108,12 @@ public final class StateMachineBuilder<S> {
 		return this;
 	}
 
-	/**
-	 * 添加进入事件
-	 * <li> 切换到了指定状态时执行的逻辑
-	 *
-	 * @param state		状态
-	 * @param handler	处理逻辑
-	 * @param async		是否异步执行
-	 */
+	@Override
 	public StateMachineBuilder<S> whenEntry(S state, StateHandler<S> handler, Boolean async) {
 		return whenEntry(state, handler, async, null);
 	}
 
-	/**
-	 * 添加进入事件
-	 * <li> 切换到了指定状态时执行的逻辑
-	 *
-	 * @param state		状态
-	 * @param handler	处理逻辑
-	 */
+	@Override
 	public StateMachineBuilder<S> whenEntry(S state, StateHandler<S> handler) {
 		return whenEntry(state, handler, null);
 	}
