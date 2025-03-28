@@ -5,8 +5,8 @@ import com.serliunx.statemanagement.manager.BidirectionalStateManager;
 /**
  * 状态机定义
  * <p>
- * 基于双向的状态管理器扩展 {@link BidirectionalStateManager}, 切换逻辑依赖于内置的状态管理器；
- * 同时可以多种监听事件, 包括:
+ * 基于双向的状态管理器扩展 {@link BidirectionalStateManager};
+ * 同时可以监听多种事件和发布事件, 包括:
  * <li> 切换至指定状态时触发	(进入事件)
  * <li> 切出指定状态时触发	(离开事件)
  * <li> 从A切换到B状态时触发	(交换事件)
