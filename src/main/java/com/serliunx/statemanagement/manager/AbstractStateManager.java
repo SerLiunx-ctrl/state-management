@@ -167,6 +167,9 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	 * @return 序号 {@link List#indexOf(Object)}
 	 */
 	protected int indexOf(S state) {
+		if (state == null) {
+			return -1;
+		}
 		return stateList.indexOf(state);
 	}
 

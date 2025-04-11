@@ -36,5 +36,10 @@ public class StandardStateMachine<S> extends AbstractStateMachine<S> implements 
 	) {
 		super(stateList, new StateMachineContext<>(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries,
 				executor, async, initialState));
+
+		final int initialIndex = indexOf(context.initialState);
+		if (initialIndex != -1) {
+			updateCurrentIndex(initialIndex);
+		}
 	}
 }

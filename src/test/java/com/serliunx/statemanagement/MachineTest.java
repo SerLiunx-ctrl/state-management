@@ -42,8 +42,8 @@ public class MachineTest {
 				.concurrent()
 				.build();
 
-		stateMachine.publish(PrinterEvent.TURN_OFF);
-
+//		stateMachine.publish(PrinterEvent.TURN_OFF);
+		System.out.println(stateMachine.current());
 		stateMachine.close();
 	}
 }

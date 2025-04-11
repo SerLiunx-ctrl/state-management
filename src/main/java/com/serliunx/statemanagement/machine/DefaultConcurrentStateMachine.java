@@ -32,6 +32,11 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
                                   S initialState
     ) {
         super(stateList, new StateMachineContext<>(entryHandlers, leaveHandlers, exchangeHandlers, eventRegistries, executor, async, initialState));
+
+        final int initialIndex = indexOf(context.initialState);
+        if (initialIndex != -1) {
+            updateCurrentIndex(initialIndex);
+        }
     }
 
     @Override
@@ -147,6 +152,11 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
     @Override
     public S current() {
         return get(index.get());
+    }
+
+    @Override
+    protected void updateCurrentIndex(int newIndex) {
+        this.index.set(newIndex);
     }
 
     /**
