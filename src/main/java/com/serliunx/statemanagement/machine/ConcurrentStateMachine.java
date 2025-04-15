@@ -13,7 +13,7 @@ public interface ConcurrentStateMachine<S> extends StateMachine<S> {
 
     /**
      * 尝试使用CAS更新状态
-     * <li> 无论是否成功更新都不触发状态处理器
+     * <li> 成功更新时触发状态处理器
      *
      * @param expectedValue 前置状态
      * @param newValue      更新的状态值

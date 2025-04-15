@@ -7,6 +7,9 @@ import com.serliunx.statemanagement.support.PrinterEvent;
 import com.serliunx.statemanagement.support.PrinterState;
 import org.junit.Test;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * 状态机测试
  *
@@ -15,6 +18,8 @@ import org.junit.Test;
  * @since 2024/12/28
  */
 public class MachineTest {
+
+	private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
 	@Test
 	public void testStandardStateMachine() throws Exception {
@@ -45,5 +50,23 @@ public class MachineTest {
 //		stateMachine.publish(PrinterEvent.TURN_OFF);
 		System.out.println(stateMachine.current());
 		stateMachine.close();
+	}
+
+	@Test
+	public void testConcurrentStateMachine2() throws Exception {
+		ConcurrentStateMachine<PrinterState> stateMachine = StateMachineBuilder.from(PrinterState.values())
+				.async(false)
+				.concurrent()
+				.whenEntry(PrinterState.STOPPING, h -> {
+					System.out.println("entering stopping...");
+				})
+				.build();
+
+		for (int i = 0; i < 5; i++) {
+			executor.execute(() -> {
+				System.out.println(stateMachine.compareAndSet(PrinterState.IDLE, PrinterState.STOPPING, true));
+			});
+		}
+
 	}
 }

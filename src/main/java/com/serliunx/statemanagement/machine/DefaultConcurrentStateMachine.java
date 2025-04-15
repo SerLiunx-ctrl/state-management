@@ -41,7 +41,7 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     @Override
     public boolean compareAndSet(S expectedValue, S newValue) {
-        return compareAndSet(expectedValue, newValue, false);
+        return compareAndSet(expectedValue, newValue, true);
     }
 
     @Override
