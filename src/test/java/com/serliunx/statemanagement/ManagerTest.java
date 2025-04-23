@@ -1,8 +1,6 @@
 package com.serliunx.statemanagement;
 
-import com.serliunx.statemanagement.manager.BreakageUnidirectionalStateManager;
-import com.serliunx.statemanagement.manager.DefaultUnidirectionalStateManager;
-import com.serliunx.statemanagement.manager.UnidirectionalStateManager;
+import com.serliunx.statemanagement.manager.*;
 import com.serliunx.statemanagement.support.PrinterState;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,5 +34,18 @@ public class ManagerTest {
 			System.out.println(bum.getAndSwitchNext());
 		}
 		System.out.println(bum.current());
+	}
+
+	@Test
+	public void testDefaultMethod() throws Exception {
+		BidirectionalStateManager<PrinterState> bsm = new DefaultBidirectionalStateManager<>(PrinterState.values());
+
+		bsm.switchPrev();
+
+		log.info("{}", bsm.current());
+
+		bsm.computeIfMatch(PrinterState.IDLE, () -> {
+			log.info("hello~");
+		});
 	}
 }

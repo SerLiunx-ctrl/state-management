@@ -58,7 +58,7 @@ public interface StateManager<S> {
 	 * @param state	指定的状态
 	 * @return	符合返回真, 否则返回假
 	 */
-	default boolean now(S state) {
+	default boolean is(S state) {
 		return current().equals(state);
 	}
 
@@ -71,9 +71,20 @@ public interface StateManager<S> {
 	 * @param newState	新的状态
 	 * @return	如果当前状态不符合或者不可切换则返回假, 否则走切换逻辑, 此时结果取决于切换的结果.
 	 */
-	default boolean switchToIfPresent(S now, S newState) {
+	default boolean switchToIfMatch(S now, S newState) {
 		if (isSwitchable() || now.equals(current()))
 			return switchTo(newState);
 		return false;
+	}
+
+	/**
+	 * 如果当前状态为指定的状态则运行所指定的逻辑
+	 *
+	 * @param state		状态
+	 * @param action	逻辑
+	 */
+	default void computeIfMatch(S state, Runnable action) {
+		if (is(state))
+			action.run();
 	}
 }
