@@ -40,10 +40,40 @@ public interface StateManager<S> {
 
 	/**
 	 * 是否可切换
+	 * <p>
+	 * 默认情况下, 状态集合中的状态数量大于1时就可以切换。部分实现在特定情况下可能不允许切换,
+	 * 比如断路的单向状态管理器 {@link BreakageUnidirectionalStateManager}, 当状态为最后一个时
+	 * 则不允许向前、或者向后切换
+	 * </p>
 	 *
 	 * @return 可切换返回真, 否则返回假
 	 */
 	default boolean isSwitchable() {
-		return true;
+		return size() > 1;
+	}
+
+	/**
+	 * 校验当前状态是否为指定的状态
+	 *
+	 * @param state	指定的状态
+	 * @return	符合返回真, 否则返回假
+	 */
+	default boolean now(S state) {
+		return current().equals(state);
+	}
+
+	/**
+	 * 如果是指定的状态则切换到另一个状态
+	 * <li> 例: 检测当前状态是否为 1 且可切换, 如何为 1 则将状态切换到 2
+	 * <li> 结合了 {@link #current()}、 {@link #switchTo(Object)} 及 {@link #isSwitchable()}
+	 *
+	 * @param now		当前状态
+	 * @param newState	新的状态
+	 * @return	如果当前状态不符合或者不可切换则返回假, 否则走切换逻辑, 此时结果取决于切换的结果.
+	 */
+	default boolean switchToIfPresent(S now, S newState) {
+		if (isSwitchable() || now.equals(current()))
+			return switchTo(newState);
+		return false;
 	}
 }
