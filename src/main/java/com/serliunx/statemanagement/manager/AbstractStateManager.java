@@ -129,7 +129,7 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	@SuppressWarnings("all")
 	protected void prev() {
 		if (--index < 0)
-			index = 0;
+			index = stateList.size() - 1;
 	}
 
 	/**
