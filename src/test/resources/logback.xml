@@ -1,0 +1,15 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %boldGreen(%d{yyyy-MM-dd HH:mm:ss(SSS)}) %magenta([%25.25thread]) %highlight([%-6level]) %boldCyan(%-36logger{32}): %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.serliunx" level="DEBUG"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
