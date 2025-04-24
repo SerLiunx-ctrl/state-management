@@ -72,7 +72,7 @@ public interface StateManager<S> {
 	 * @return	如果当前状态不符合或者不可切换则返回假, 否则走切换逻辑, 此时结果取决于切换的结果.
 	 */
 	default boolean switchToIfMatch(S now, S newState) {
-		if (isSwitchable() || now.equals(current()))
+		if (isSwitchable() && now.equals(current()))
 			return switchTo(newState);
 		return false;
 	}
