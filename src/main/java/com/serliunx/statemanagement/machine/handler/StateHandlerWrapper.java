@@ -19,7 +19,8 @@ public final class StateHandlerWrapper<S> {
 	private final StateHandler<S> stateHandler;
 	/**
 	 * 执行器
-	 * <li> 用于异步执行处理逻辑
+	 * <p>
+	 * 用于异步执行处理逻辑
 	 */
 	private final Executor executor;
 	/**

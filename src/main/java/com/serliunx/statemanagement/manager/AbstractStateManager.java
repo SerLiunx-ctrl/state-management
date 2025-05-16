@@ -112,8 +112,10 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 
 	/**
 	 * 将序号移动至下一个
-	 * <li> 自动归零
-	 * <li> 仅在持有写锁的情况下访问
+	 * <ul>
+	 *     <li> 自动归零
+	 *     <li> 仅在持有写锁的情况下访问
+	 * </ul>
 	 */
 	@SuppressWarnings("all")
 	protected void next() {
@@ -123,8 +125,10 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 
 	/**
 	 * 将序号移动至上一个
-	 * <li> 自动归零
-	 * <li> 仅在持有写锁的情况下访问
+	 * <ul>
+	 *     <li> 自动归零
+	 *     <li> 仅在持有写锁的情况下访问
+	 * </ul>
 	 */
 	@SuppressWarnings("all")
 	protected void prev() {
@@ -137,7 +141,9 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 	 * <p>
 	 * 类及子类访问当前状态时不允许使用{@link #current()}，因为会造成死锁
 	 *
-	 * <li> 仅在持有锁的情况下访问
+	 * <p>
+	 *     仅在持有锁的情况下访问
+	 * </p>
 	 *
 	 * @return 当前状态
 	 */
@@ -197,6 +203,8 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 
 	/**
 	 * 更新当前状态的序号
+	 *
+	 * @param newIndex	新的序号
 	 */
 	protected void updateCurrentIndex(int newIndex) {
 		index = newIndex;
@@ -204,6 +212,8 @@ public abstract class AbstractStateManager<S> implements StateManager<S> {
 
 	/**
 	 * 状态序号默认值(等同于默认状态)
+	 *
+	 * @return 默认的状态值
 	 */
 	protected int getDefault() {
 		return defaultIndex;

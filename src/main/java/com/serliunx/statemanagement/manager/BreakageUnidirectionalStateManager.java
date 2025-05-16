@@ -6,8 +6,10 @@ import java.util.List;
 
 /**
  * 断路的单向状态管理器
- * <p> 逻辑与{@link UnidirectionalStateManager}大体相同, 不同的点在于:
- * <li> 最后一个状态无法转向第一个状态, 即为一次性的状态管理器.
+ * <p>
+ *     逻辑与{@link UnidirectionalStateManager}大体相同, 不同的点在于:
+ *     最后一个状态无法转向第一个状态, 即为一次性的状态管理器.
+ * </p>
  *
  * @author <a href="mailto:serliunx@yeah.net">SerLiunx</a>
  * @version 1.0.0

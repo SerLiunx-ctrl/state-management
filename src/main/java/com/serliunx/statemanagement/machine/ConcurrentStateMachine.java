@@ -1,8 +1,9 @@
 package com.serliunx.statemanagement.machine;
 
 /**
- * 基本行为与{@link StateMachine} 一致, 最大不同是切换状态不再使用直接的锁机制, 具体由实现类决定
- * <li> 默认实现{@link DefaultConcurrentStateMachine}, 状态切换序列由CAS实现.
+ * 基本行为与{@link StateMachine} 一致, 最大不同是切换状态不再使用直接的锁机制, 具体由实现类决定;
+ * <p>
+ * 默认实现{@link DefaultConcurrentStateMachine}, 状态切换序列由CAS实现.
  *
  * @author <a href="mailto:serliunx@yeah.net">SerLiunx</a>
  * @version 1.0.0
@@ -12,8 +13,7 @@ package com.serliunx.statemanagement.machine;
 public interface ConcurrentStateMachine<S> extends StateMachine<S> {
 
     /**
-     * 尝试使用CAS更新状态
-     * <li> 成功更新时触发状态处理器
+     * 尝试使用CAS更新状态, 成功更新时触发状态处理器
      *
      * @param expectedValue 前置状态
      * @param newValue      更新的状态值

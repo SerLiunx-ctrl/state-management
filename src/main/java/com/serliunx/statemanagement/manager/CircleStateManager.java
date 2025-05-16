@@ -2,7 +2,9 @@ package com.serliunx.statemanagement.manager;
 
 /**
  * 将指定状态管理器标记为循环的状态管理器
- * <li> 允许单向、双向循环
+ * <p>
+ *     允许单向、双向循环
+ * </p>
  *
  * @author <a href="mailto:serliunx@yeah.net">SerLiunx</a>
  * @version 1.0.0

@@ -18,8 +18,10 @@ public final class HandlerInvocationDelegate {
     /**
      * 触发处理器
      *
-     * @param from	源状态
-     * @param to	目的状态
+     * @param context   状态机上下文
+     * @param from	    源状态
+     * @param to	    目的状态
+     * @param <S> 状态类型
      */
     public static <S> void invokeHandlers(StateMachineContext<S> context, S from, S to) {
         // 触发离开处理器
@@ -35,6 +37,12 @@ public final class HandlerInvocationDelegate {
 
     /**
      * 触发逻辑
+     *
+     * @param context           状态机上下文
+     * @param handlerWrappers   封装后处理器集合
+     * @param from	            源状态
+     * @param to	            目的状态
+     * @param <S>               状态类型
      */
     public static <S> void doInvokeHandlers(StateMachineContext<S> context,
                                             List<StateHandlerWrapper<S>> handlerWrappers, S from, S to) {

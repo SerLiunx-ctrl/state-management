@@ -64,8 +64,10 @@ public interface StateManager<S> {
 
 	/**
 	 * 如果是指定的状态则切换到另一个状态
-	 * <li> 例: 检测当前状态是否为 1 且可切换, 如何为 1 则将状态切换到 2
-	 * <li> 结合了 {@link #current()}、 {@link #switchTo(Object)} 及 {@link #isSwitchable()}
+	 * <p>
+	 *     例: 检测当前状态是否为 1 且可切换, 如何为 1 则将状态切换到 2;
+	 *     结合了 {@link #current()}、 {@link #switchTo(Object)} 及 {@link #isSwitchable()}
+	 * </p>
 	 *
 	 * @param now		当前状态
 	 * @param newState	新的状态

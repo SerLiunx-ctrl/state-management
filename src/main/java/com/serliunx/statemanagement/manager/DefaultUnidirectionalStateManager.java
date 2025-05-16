@@ -83,6 +83,9 @@ public class DefaultUnidirectionalStateManager<S> extends AbstractStateManager<S
 
 	/**
 	 * 保留默认的切换方式供子类使用
+	 *
+	 * @param state 目标状态值
+	 * @return 成功切换返回真, 否则返回假
 	 */
 	protected boolean defaultSwitchTo(S state) {
 		return super.switchTo(state);

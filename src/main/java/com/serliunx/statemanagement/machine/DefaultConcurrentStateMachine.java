@@ -161,6 +161,8 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     /**
      * 是否为默认状态
+     *
+     * @return 默认状态时返回真, 否则返回假.
      */
     protected boolean isDefault() {
         return index.get() == 0;
@@ -168,7 +170,9 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     /**
      * 移动下标至上一个状态
-     * <li> 使用CAS一直尝试, 直到成功
+     * <p>
+     *     使用CAS一直尝试, 直到成功
+     * </p>
      */
     protected void exchangeToPrev() {
         final int size = size();
@@ -180,7 +184,9 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     /**
      * 移动下标至下一个状态
-     * <li> 使用CAS一直尝试, 直到成功
+     * <p>
+     *     使用CAS一直尝试, 直到成功
+     * </p>
      */
     protected void exchangeToNext() {
         final int size = size();
@@ -192,7 +198,9 @@ public class DefaultConcurrentStateMachine<S> extends AbstractStateMachine<S> im
 
     /**
      * 切换到指定状态值
-     * <li> 使用CAS一直尝试, 直到成功
+     * <p>
+     *     使用CAS一直尝试, 直到成功
+     * </p>
      *
      * @param target    目标值
      */

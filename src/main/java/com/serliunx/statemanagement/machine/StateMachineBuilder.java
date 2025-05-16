@@ -57,6 +57,7 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 	 * 定义初始状态
 	 *
 	 * @param initialState	初始状态
+	 * @return 状态机构建
 	 */
 	public StateMachineBuilder<S> withInitial(S initialState) {
 		this.initialState = initialState;
@@ -123,6 +124,7 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 	 *
 	 * @param event	事件
 	 * @param logic	切换逻辑
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> whenHappened(Object event, Consumer<StateMachine<S>> logic) {
 		List<Consumer<StateMachine<S>>> consumers = eventRegistries.computeIfAbsent(event, k -> new ArrayList<>());
@@ -136,6 +138,7 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 	 * 优先级低于添加事件时指定的执行器
 	 *
 	 * @param executor 执行器
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> executor(Executor executor) {
 		this.executor = executor;
@@ -146,6 +149,7 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 	 * 定义状态机是否异步执行
 	 *
 	 * @param async 是否异步执行
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> async(Boolean async) {
 		this.async = async;
@@ -154,6 +158,8 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 
 	/**
 	 * 定义状态机为异步执行
+	 *
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> async() {
 		return async(true);
@@ -161,9 +167,12 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 
 	/**
 	 * 指定状态机的类型
-	 * <li> 状态机并发与否并不影响事件的执行逻辑
+	 * <p>
+	 *     状态机并发与否并不影响事件的执行逻辑
+	 * </p>
 	 *
 	 * @param type 类型
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> type(StateMachineType type) {
 		if (type == null) {
@@ -175,7 +184,11 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 
 	/**
 	 * 指定状态机的类型为标准型
-	 * <li> 状态机并发与否并不影响事件的执行逻辑
+	 * <p>
+	 *     状态机并发与否并不影响事件的执行逻辑
+	 * </p>
+	 *
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> standard() {
 		return type(StateMachineType.STANDARD);
@@ -183,14 +196,21 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 
 	/**
 	 * 指定状态机的类型为并发型
-	 * <li> 状态机并发与否并不影响事件的执行逻辑
+	 * <p>
+	 *     状态机并发与否并不影响事件的执行逻辑
+	 * </p>
+	 *
+	 * @return 当前对象, 链式调用
 	 */
 	public StateMachineBuilder<S> concurrent() {
 		return type(StateMachineType.CONCURRENT);
 	}
 
 	/**
-	 * 构建
+	 * 执行构建
+	 *
+	 * @param <M>	状态机类型
+	 * @return 状态机
 	 */
 	@SuppressWarnings("unchecked")
 	public <M extends StateMachine<S>> M build() {
@@ -210,7 +230,8 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 	/**
 	 * 状态机构建器
 	 *
-	 * @param states 状态集合
+	 * @param <S>		状态类型
+	 * @param states	状态集合
 	 * @return 状态机构建器实例
 	 */
 	public static <S> StateMachineBuilder<S> from(S[] states) {
@@ -220,7 +241,8 @@ public final class StateMachineBuilder<S> implements StateEventRegistry<S> {
 	/**
 	 * 状态机构建器
 	 *
-	 * @param states 状态集合
+	 * @param <S>		状态类型
+	 * @param states	状态集合
 	 * @return 状态机构建器实例
 	 */
 	public static <S> StateMachineBuilder<S> from(List<S> states) {

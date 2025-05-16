@@ -7,9 +7,11 @@ import com.serliunx.statemanagement.manager.BidirectionalStateManager;
  * <p>
  * 基于双向的状态管理器扩展 {@link BidirectionalStateManager};
  * 同时可以监听多种事件和发布事件, 包括:
- * <li> 切换至指定状态时触发	(进入事件)
- * <li> 切出指定状态时触发	(离开事件)
- * <li> 从A切换到B状态时触发	(交换事件)
+ * <ul>
+ *      <li> 切换至指定状态时触发	(进入事件)
+ *      <li> 切出指定状态时触发	(离开事件)
+ *      <li> 从A切换到B状态时触发	(交换事件)
+ * </ul>
  * <p>
  * 请使用 {@link StateMachineBuilder} 来构建状态机.
  *
@@ -77,7 +79,9 @@ public interface StateMachine<S> extends BidirectionalStateManager<S>, AutoClose
 
     /**
      * 切换至指定状态
-     * <li> 在使用状态机的情况, 仅切换成功才会触发注册的各种事件.
+     * <p>
+     *     在使用状态机的情况, 仅切换成功才会触发注册的各种事件.
+     * </p>
      *
      * @param invokeHandlers    是否唤醒状态处理器
      * @param state             新的状态
@@ -94,7 +98,9 @@ public interface StateMachine<S> extends BidirectionalStateManager<S>, AutoClose
 
     /**
      * 切换至指定状态
-     * <li> 在使用状态机的情况, 仅切换成功才会触发注册的各种事件.
+     * <p>
+     *     在使用状态机的情况, 仅切换成功才会触发注册的各种事件.
+     * </p>
      *
      * @param state 新的状态
      * @return 切换成功返回真, 否则返回假

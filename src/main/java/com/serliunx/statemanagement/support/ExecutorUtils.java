@@ -15,8 +15,11 @@ public final class ExecutorUtils {
 
 	/**
 	 * 快速获取自适应参数的线程池
-	 * <li> 核心线程数量为当前处理器数量的两倍; 最大线程数量为当前处理器数量的四倍.
+	 * <p>
+	 *     核心线程数量为当前处理器数量的两倍; 最大线程数量为当前处理器数量的四倍.
+	 * </p>
  	 *
+	 * @param rejectedExecutionHandler 拒绝策略
 	 * @return 执行器(线程池)
 	 */
 	public static Executor adaptiveThreadPool(RejectedExecutionHandler rejectedExecutionHandler) {
